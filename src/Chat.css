@@ -50,4 +50,15 @@
 
 .chat_messages {
     flex: 1;
+    overflow:scroll;
+}
+
+/* Chrome, safari, opera */
+.chat_messages::-webkit-scrollbar {
+    display:none;
+}
+
+.chat_messages {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
