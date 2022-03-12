@@ -1,0 +1,29 @@
+import { Avatar } from '@material-ui/core';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setChat } from './features/chatSlice';
+import "./SidebarChat.css";
+
+// function SidebarChat(id, chatName) {
+function SidebarChat({id, chatName}) {
+    const dispatch = useDispatch();
+    //const [chat, info]
+    return (
+        <div onClick={() => {
+            dispatch(setChat({
+                chatId: id,
+                chatName: chatName,
+            }))
+            
+        }} className="sidebarChat">
+            <Avatar></Avatar>
+            <div className="sidebarChat_info">
+                <h3> {chatName} </h3>
+                <p>Last message sent...</p>
+                <small>timestamp</small>
+            </div>
+        </div>
+    );
+}
+
+export default SidebarChat;
