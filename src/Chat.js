@@ -12,6 +12,9 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { selectUser } from './features/userSlice';
 import FlipMove from 'react-flip-move';
+import { v4 as uuidv4 } from 'uuid';
+// import Schedule1 from './Schedule';
+
 
 function Chat() {
     const user = useSelector(selectUser);
@@ -33,6 +36,7 @@ function Chat() {
     }, [chatId]);
 
     const sendMessage = (e) => {
+
         e.preventDefault();
 
         db.collection("chats").doc(chatId).collection("messages").add({
@@ -43,9 +47,115 @@ function Chat() {
             email: user.email,
             displayName: user.displayName,
         });
+
+    
+        console.log("input" + input);
+            switch(true){
+                case input.includes("Schedule"):
+                    let split_str = input.split(',');
+                    if(split_str.length !==5){
+                        console.log('Cannot schedule, format must be in Schedule: description, Month dd, yyyy, hh:mm, hh:mm');
+                        db.collection("chats").doc(chatId).collection("messages").add({
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            message: 'Cannot schedule, format must be in Schedule: description, mm/dd/yy, hh:mm:ss, hh:mm:ss',
+                            uid: uuidv4(),
+                            email: "abc@gmail.com",
+                            displayName: 'Scheduler Bot',
+                        });
+                    }
+                    else{
+                        //Description
+                        let desc = split_str[0].split(':')[1].trimStart();
+                        //Month and day
+                        let event_date = split_str[1].trimStart();
+                        //Year
+                        let year = split_str[2].trimStart();
+                        //Time start
+                        let event_start_time = split_str[3].trimStart();
+                        //Time end
+                        let event_end_time = split_str[4].trimStart();
+
+                        console.log(event_date + ', ' + year + ' ' + event_start_time);
+                        console.log(event_date + ', ' + year + ' ' + event_end_time);
+
+                        const eventStartTime = new Date(event_date + ', ' + year + ' ' + event_start_time);
+                        const eventEndTime = new Date(event_date + ', ' + year + ' ' + event_end_time);
+                        
+                        var gapi = window.gapi;
+                        var CLIENT_ID = "28311222963-2h78gftbh4khmpvjpgkbp20vgj6sqfn6.apps.googleusercontent.com"
+                        var API_KEY = "AIzaSyAFfLpLvNeDMvccD-G52JnGP2fbbic8pWo"
+                        var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
+                        var SCOPES = "https://www.googleapis.com/auth/calendar.events"
+                        
+                        gapi.load('client:auth2', () => {
+                            console.log('loaded client');
+                      
+                            gapi.client.init({
+                              apiKey: API_KEY,
+                              clientId: CLIENT_ID,
+                              discoveryDocs: DISCOVERY_DOCS,
+                              scope: SCOPES,
+                            });
+
+                            gapi.client.load('calendar', 'v3', () => console.log('bam!'));
+                            //Sign in user
+                            gapi.auth2.getAuthInstance().signIn().then(() => {
+                                const event = {
+                                    summary: desc,
+                                    location: 'N/A',
+                                    description: 'Event description',
+                                    start:{
+                                        dateTime: eventStartTime,
+                                        timeZone: 'America/Denver',
+                                    },
+                                    end:{
+                                        dateTime: eventEndTime,
+                                        timeZone: 'America/Denver',
+                                    },
+                                    colorId: 1, 
+                                }
+                                //Create event
+                                var request = gapi.client.calendar.events.insert({
+                                    'calendarId': 'primary',
+                                    'resource': event,
+                                  })
+                                  let s = event_date + ', ' + year + ' ' + event_start_time;
+                                  let e = event_date + ', ' + year + ' ' + event_end_time;
+                                  request.execute(event => {
+                                    console.log(event)
+                                    window.open(event.htmlLink)
+                                    db.collection("chats").doc(chatId).collection("messages").add({
+                                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                        message: 'Added event to your Google Calendar!\n' + 'Event: ' + desc + '\nTime: ' + s + ' - '+ e + '\nLink to event: ' +  event.htmlLink,
+                                        uid: uuidv4(),
+                                        email: "abc@gmail.com",
+                                        displayName: 'Scheduler Bot',
+                                        event_desc: desc,
+                                        event_start: eventStartTime,
+                                        event_end: eventEndTime,
+                                        event_link: event.htmlLink,
+                                    });
+
+                                  })
+
+                            });
+                        });
+                        
+                        
+
+                    }
+                    
+
+            };
         //Firebase magic
         setInput("");
     };
+
+    // Parsing input
+    // switch(true){
+    //     case input.includes("Time")
+    // };
+    
     return (
         <div className="chat">
             {/* chat header */}

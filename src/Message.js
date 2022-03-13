@@ -20,7 +20,7 @@ import "./Message.css";
 
 const Message = forwardRef(
     (
-        {id, contents: {timestamp, displayName, email, message, photo, uid} },
+        {id, contents: {timestamp, displayName, email, message, photo, uid, event_desc, event_start, event_end, event_link} },
     ref
     ) => {
 
@@ -32,6 +32,62 @@ const Message = forwardRef(
            <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
         </div>
     )
+    
+    // if (displayName==='Scheduler Bot'){
+    //     return (
+    //         <div ref={ref} className={`message ${user.email === email && "message_sender"}`}> 
+    //             <Avatar className="message_photo" src={photo}/>
+    //             <p>
+    //                 {message} <br/>
+    //                 Event: {event_desc} <br></br>
+    //                 Time: {event_start}-{event_end} <br></br>
+    //                 Link to event: {event_link}
+    //             </p>
+    //             <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
+    //         </div> 
+    //     )
+    // }
+    // else{
+    //     return(
+    //         <div ref={ref} className={`message ${user.email === email && "message_sender"}`}> 
+    //         <Avatar className="message_photo" src={photo}/>
+    //         <p>{message}</p>
+    //         <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
+    //         </div>   
+    //     )
+        
+    // }
+    // return (
+    //     <div>
+
+    //         {displayName==='Scheduler Bot' &&
+
+    //             <div ref={ref} className={`message ${user.email === email && "message_sender"}`}> 
+    //                 <Avatar className="message_photo" src={photo}/>
+    //                 <p>
+    //                     {message} <br/>
+    //                     Event: {event_desc} <br></br>
+    //                     Time: {event_start}-{event_end} <br></br>
+    //                     Link to event: {event_link}
+    //                 </p>
+    //                 <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
+    //             </div> 
+
+    //         }
+
+    //         {displayName === user.displayName && 
+    //             <div ref={ref} className={`message ${user.email === email && "message_sender"}`}> 
+    //                 <Avatar className="message_photo" src={photo}/>
+    //                 <p>{message}</p>
+    //                 <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
+    //             </div>   
+                
+    //         }
+    //        {/* <Avatar className="message_photo" src={photo}/>
+    //        <p>{message}</p>
+    //        <small>{new Date(timestamp?.toDate()).toLocaleString()}</small> */}
+    //     </div>
+    // )
 });
 
 export default Message
