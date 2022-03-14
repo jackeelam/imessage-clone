@@ -18,22 +18,30 @@ const Message = forwardRef(
            <p>{message}</p>
            <small>{new Date(timestamp?.toDate()).toLocaleString()}</small> */}
 
+            {displayName !== 'Sentiment_Bot' && displayName!=='Username_Bot' && displayName!== 'Password_Bot' && displayName!=='Scheduler_Bot' && displayName!=='Recipe_Bot' &&
+              <>
+              <Avatar className="message_photo" src={photo}/>
+              <p>{message}</p>
+              <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
+              </>
+            }
            {displayName === 'Sentiment_Bot' &&
-            <>
+           <>
               <Avatar className="message_photo" src={photo}/>
               <p>
-                {message}<br/><br/>
-                <img src={meme_img} alt={meme_img} />
+                  {message} <br/>
+                  <img src={meme_img} alt={meme_img} />
               </p>
               <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
             </>
            }
 
+
           {displayName === 'Username_Bot' && 
             <>
               <Avatar className="message_photo" src={photo}/>
               <p id='txt__username'>
-                {message}<br/><br/>
+                {message} <br />
                 <img className='lock_gif' src={image} alt='lock_animation_gif' width={200}/>
               </p>
               <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
@@ -44,7 +52,7 @@ const Message = forwardRef(
             <>
               <Avatar className="message_photo" src={photo}/>
               <p id='txt__password'>
-                {message}<br/><br/>
+                {message} <br />
                 <img className='lock_gif' src={image} alt='lock_animation_gif' width={200}/>
               </p>
               <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
@@ -55,19 +63,22 @@ const Message = forwardRef(
             <>
               <Avatar className="message_photo" src={photo}/>
               <p id='txt__scheduler'>
-                {message}<br/>
+                {message} <br />
                 Link to event:
                 <a href={event_link}>{event_link}</a>
               </p>
               <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
+
             </>
+            
+            
           }
 
           {displayName === 'Recipe_Bot' &&
-          <>
-            <Avatar className="message_photo" src={photo}/>
-            <p id='txt__recipe'>
-              {message}<br/><br/>
+           <> 
+              <Avatar className="message_photo" src={photo}/>
+              <p id='txt__recipe'>
+              {message} <br />
               {label1} from {source1} <br/><br/>
               <img className='recipe_img' src={img1} alt='Recipe_1_img'/><br/>
               <a href={url1}>{url1}</a><br/>
@@ -77,17 +88,6 @@ const Message = forwardRef(
               <br/> {label3} from {source3}<br/><br/>
               <img className='recipe_img' src={img3} alt='Recipe_3_img'/><br/>
               <a href={url3}>{url3}</a><br/>
-            </p>
-            <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
-          </>
-          }
-
-
-          {displayName !== 'Sentiment_Bot' && displayName!=='Username_Bot' && displayName!== 'Password_Bot' && displayName!=='Scheduler_Bot' && displayName!=='Recipe_Bot' &&
-            <>
-              <Avatar className="message_photo" src={photo}/>
-              <p id='txt__default'>
-                {message}
               </p>
               <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
             </>

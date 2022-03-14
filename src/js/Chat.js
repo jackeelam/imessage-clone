@@ -190,10 +190,10 @@ function Chat() {
                                 const events = response.result.items;
                                 var messsage_to_add = {
                                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                    message: 'Here are your scheduled events for ' + input.split(' ')[2] + ';',
+                                    message: 'Here are your scheduled events for ' + input.split(' ')[input.split(' ').length-1] + ':',
                                     uid: uuidv4(),
                                     email: "Scheduler_Bot@gmail.com",
-                                    displayName: 'Scheduler_Bot',
+                                    displayName: 'Events_Bot',
                                 };
                                 db.collection("chats").doc(chatId).collection("messages").add(
                                     messsage_to_add
@@ -201,7 +201,11 @@ function Chat() {
                                 for(let i = 0; i < events.length; i++){
                                     var start = new Date(events[i]['start']['dateTime']).toLocaleTimeString('en-US');
                                     var end = new Date(events[i]['end']['dateTime']).toLocaleTimeString('en-US');
-                                    messsage_to_add["message"] = events[i]['summary'] + ' from ' + start + ' to ' + end;
+                                    var start_to_end = ' from ' + start + ' to ' + end;
+                                    if(start === 'Invalid Date' || end === 'Invalid Date'){
+                                        start_to_end = "";
+                                    }
+                                    messsage_to_add["message"] = events[i]['summary'] + start_to_end;
                                     db.collection("chats").doc(chatId).collection("messages").add(
                                         messsage_to_add
                                     );
@@ -311,7 +315,7 @@ function Chat() {
                             message: 'Cannot schedule, format must be in Schedule: description, mm/dd/yy, hh:mm:ss, hh:mm:ss',
                             uid: uuidv4(),
                             email: "Scheduler_Bot@gmail.com",
-                            displayName: 'Scheduler_Bot',
+                            displayName: 'Error_Bot',
                         });
                     }
                     else{
@@ -363,12 +367,13 @@ function Chat() {
                                 var request = gapi.client.calendar.events.insert({
                                     'calendarId': 'primary',
                                     'resource': event,
-                                  })
-                                  let s = event_date + ', ' + year + ' ' + event_start_time;
-                                  let e = event_date + ', ' + year + ' ' + event_end_time;
-                                  request.execute(event => {
+                                })
+                                let s = event_date + ', ' + year + ' ' + event_start_time;
+                                let e = event_date + ', ' + year + ' ' + event_end_time;
+
+                                request.execute(event => {
                                     console.log(event)
-                                    window.open(event.htmlLink)
+                                    // window.open(event.htmlLink)
                                     db.collection("chats").doc(chatId).collection("messages").add({
                                         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                         message: 'Added event to your Google Calendar!\n' + 'Event: ' + desc + '\nTime: ' + s + ' - '+ e,
@@ -376,12 +381,15 @@ function Chat() {
                                         email: "Scheduler_Bot@gmail.com",
                                         displayName: 'Scheduler_Bot',
                                         event_desc: desc,
-                                        event_start: eventStartTime,
-                                        event_end: eventEndTime,
+                                        event_start: s,
+                                        event_end: e,
                                         event_link: event.htmlLink,
+                                        uid: uuidv4(),
+                                        email: "abc@gmail.com",
+                                        displayName: 'Scheduler_Bot',
                                     });
 
-                                  })
+                                })
 
                             });
                         });
