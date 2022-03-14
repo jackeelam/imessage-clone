@@ -135,7 +135,7 @@ function Chat() {
                                             message: message,
                                             uid: uuidv4(),
                                             email: "abc@gmail.com",
-                                            displayName: 'Sentiment Bot',
+                                            displayName: 'Sentiment_Bot',
                                             meme_img: meme_img,
                                         }
                                     );
@@ -197,7 +197,7 @@ function Chat() {
                                     message: 'Here are your scheduled events for ' + input.split(' ')[2] + ';',
                                     uid: uuidv4(),
                                     email: "abc@gmail.com",
-                                    displayName: 'Scheduler Bot',
+                                    displayName: 'Events_Bot',
                                 };
                                 db.collection("chats").doc(chatId).collection("messages").add(
                                     messsage_to_add
@@ -315,7 +315,7 @@ function Chat() {
                             message: 'Cannot schedule, format must be in Schedule: description, mm/dd/yy, hh:mm:ss, hh:mm:ss',
                             uid: uuidv4(),
                             email: "abc@gmail.com",
-                            displayName: 'Scheduler Bot',
+                            displayName: 'Error_Bot',
                         });
                     }
                     else{
@@ -367,25 +367,26 @@ function Chat() {
                                 var request = gapi.client.calendar.events.insert({
                                     'calendarId': 'primary',
                                     'resource': event,
-                                  })
-                                  let s = event_date + ', ' + year + ' ' + event_start_time;
-                                  let e = event_date + ', ' + year + ' ' + event_end_time;
-                                  request.execute(event => {
+                                })
+                                let s = event_date + ', ' + year + ' ' + event_start_time;
+                                let e = event_date + ', ' + year + ' ' + event_end_time;
+
+                                request.execute(event => {
                                     console.log(event)
-                                    window.open(event.htmlLink)
+                                    // window.open(event.htmlLink)
                                     db.collection("chats").doc(chatId).collection("messages").add({
                                         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                        message: 'Added event to your Google Calendar! ' + 'Event: ' + desc + ' Time: ' + s + ' - '+ e + ' Link to event: ' +  event.htmlLink,
+                                        message: 'Added event to your Google Calendar! ',
+                                        event_desc: desc,
+                                        event_start: s,
+                                        event_end: e,
+                                        event_link: event.htmlLink,
                                         uid: uuidv4(),
                                         email: "abc@gmail.com",
-                                        displayName: 'Scheduler Bot',
-                                        event_desc: desc,
-                                        event_start: eventStartTime,
-                                        event_end: eventEndTime,
-                                        event_link: event.htmlLink,
+                                        displayName: 'Scheduler_Bot',
                                     });
 
-                                  })
+                                })
 
                             });
                         });

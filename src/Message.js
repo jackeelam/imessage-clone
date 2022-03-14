@@ -18,7 +18,7 @@ const Message = forwardRef(
            <p>{message}</p>
            <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
 
-           {displayName === 'Sentiment Bot' &&
+           {displayName === 'Sentiment_Bot' &&
             <p>
                 <img src={meme_img} alt={meme_img} />
             </p>
@@ -38,7 +38,6 @@ const Message = forwardRef(
 
         {displayName === 'Scheduler_Bot' &&  
           <p id='txt__scheduler'>
-          {message}
           </p>
         }
 
