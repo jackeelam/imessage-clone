@@ -1,5 +1,5 @@
 import React from 'react';
-import "./Imessage.css"
+import "../css/Imessage.css"
 import Sidebar from "./Sidebar";
 import Chat from "./Chat";
 

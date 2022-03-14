@@ -10,8 +10,8 @@
     padding: 20px;
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid lightgray;
-    background-color: #f5f5f5;
+    border-bottom: 1px solid #8f98b3;
+    background-color: #f2f5ff;
 }
 
 .chat_header > h4 {
@@ -27,8 +27,8 @@
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    border-top: 1px solid lightgray;
-    background-color: #f5f5f5;
+    border-top: 1px solid #8f98b3;
+    background-color: #f2f5ff;
 }
 
 .chat_input > form {
@@ -38,7 +38,7 @@
 .chat_input > form > input {
     width: 98%;
     outline-width: 0;
-    border: 1px solid lightgray;
+    border: 1px solid #8f98b3;
     /* round the border of message input */
     border-radius: 999px; 
     padding: 5px;

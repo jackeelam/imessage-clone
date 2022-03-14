@@ -8,16 +8,19 @@
 }
 
 .message > p {
-    background-color: #f3f3f5;
+    background-color: #e6ecff;
+    white-space: pre-wrap;
     font-size: medium;
     padding: 15px;
     border-radius: 20px;
     margin: 10px;
     margin-right: auto;
+    border: 1px solid #8f98b3;
+    color: black;
 }
 
 .message > small {
-    color: gray;
+    color: #8f98b3;
     position: absolute;
     font-size: 8px;
     bottom: -5px;
@@ -34,8 +37,8 @@
 }
 
 .message_sender > p {
-    background-color: #3cabfa;
-    color: white;
+    background-color: #f2f5ff;
+    color: black;
 }
 .message_photo {
     order: 0;
