@@ -63,7 +63,7 @@ const Message = forwardRef(
             <>
               <Avatar className="message_photo" src={photo}/>
               <p id='txt__scheduler'>
-                {message}
+                {message} <br />
                 Link to event:
                 <a href={event_link}>{event_link}</a>
               </p>

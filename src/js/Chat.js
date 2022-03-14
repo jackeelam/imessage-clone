@@ -190,10 +190,10 @@ function Chat() {
                                 const events = response.result.items;
                                 var messsage_to_add = {
                                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                    message: 'Here are your scheduled events for ' + input.split(' ')[2] + ';',
+                                    message: 'Here are your scheduled events for ' + input.split(' ')[2] + ':',
                                     uid: uuidv4(),
                                     email: "Scheduler_Bot@gmail.com",
-                                    displayName: 'Scheduler_Bot',
+                                    displayName: 'Events_Bot',
                                 };
                                 db.collection("chats").doc(chatId).collection("messages").add(
                                     messsage_to_add
@@ -201,7 +201,11 @@ function Chat() {
                                 for(let i = 0; i < events.length; i++){
                                     var start = new Date(events[i]['start']['dateTime']).toLocaleTimeString('en-US');
                                     var end = new Date(events[i]['end']['dateTime']).toLocaleTimeString('en-US');
-                                    messsage_to_add["message"] = events[i]['summary'] + ' from ' + start + ' to ' + end;
+                                    var start_to_end = ' from ' + start + ' to ' + end;
+                                    if(start === 'Invalid Date' || end === 'Invalid Date'){
+                                        start_to_end = "";
+                                    }
+                                    messsage_to_add["message"] = events[i]['summary'] + start_to_end;
                                     db.collection("chats").doc(chatId).collection("messages").add(
                                         messsage_to_add
                                     );
