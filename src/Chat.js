@@ -13,8 +13,14 @@ import 'firebase/compat/firestore';
 import { selectUser } from './features/userSlice';
 import FlipMove from 'react-flip-move';
 import { v4 as uuidv4 } from 'uuid';
+import Sentiment from 'sentiment';
 // import Schedule1 from './Schedule';
 
+const objectToQueryParam = obj => {
+    const params = Object.entries(obj).map(([key, value]) => `${key}=${value}`);
+    return "?" + params.join("&");
+  };
+  
 
 function Chat() {
     const user = useSelector(selectUser);
@@ -28,6 +34,8 @@ function Chat() {
     var API_KEY = "AIzaSyAFfLpLvNeDMvccD-G52JnGP2fbbic8pWo"
     var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
     var SCOPES = "https://www.googleapis.com/auth/calendar.events"
+
+    const sentiment = new Sentiment();
 
     useEffect(() => {
         if (chatId){
@@ -57,6 +65,70 @@ function Chat() {
     
         console.log("input" + input);
             switch(true){
+                case input.includes("Sentiment score:"):{
+                    var sentence = input.split(':')[1];
+                    var result = sentiment.analyze(sentence);
+                    console.log("Sentiment score for " + sentence + ": ");
+                    console.log(result);
+                    var message = "";
+                    if(result.score <0){
+                        message = "Aww, I am sorry you had a bad day and are not feeling great :("
+                    }
+                    else if(result.score===0){
+                        message = "You seem to have had a neutral day."
+                    }
+                    else{
+                        message = "I'm glad you had a great day!"
+                    }
+                    //Fetch a meme
+                    fetch("https://api.imgflip.com/get_memes").then(x => x.json().then(response => {
+                            //console.log(response.data.memes);
+                            const params = {
+                                template_id: response.data.memes[0].id,
+                                text0: 'topText',
+                                text1: 'bottomText',
+                                username: "jackeelam",
+                                password: "kSV_G+aH4bEYyDe"
+                              };
+                              console.log(`https://api.imgflip.com/caption_image${objectToQueryParam(params)}`);
+                            //   fetch(`https://api.imgflip.com/caption_image${objectToQueryParam(params)}`).then(img =>
+                            //     img.json().then(img_json => {console.log("Generated meme url: "); console.log(img_json);} )
+                            //   );
+                              fetch('https://api.imgflip.com/caption_image', 
+                                {
+                                    method: 'POST',
+                                    body: new URLSearchParams({
+                                        template_id: response.data.memes[0].id,
+                                        text0: 'topText',
+                                        text1: 'bottomText',
+                                        username: "jackeelam",
+                                        password: "kSV_G+aH4bEYyDe"
+                                    })
+                                }
+                              ).then(img =>
+                                img.json().then(img_json => {console.log("Generated meme url: "); console.log(img_json);} )
+                              );
+                        })
+                    );
+
+                    
+                    //   const response = await fetch(
+                    //     `https://api.imgflip.com/caption_image${objectToQueryParam(
+                    //       params
+                    //     )}`
+                    
+                    db.collection("chats").doc(chatId).collection("messages").add(
+                        {
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            message: message,
+                            uid: uuidv4(),
+                            email: "abc@gmail.com",
+                            displayName: 'Sentiment Bot',
+                        }
+                    );
+
+                    break;
+                }
                 case input.includes("Events for"):{
                     var time_min = new Date();
                     time_min.setHours(0, 0, 0);
@@ -69,7 +141,7 @@ function Chat() {
                         console.log(input.split(' ')[2]);
                         time_min = new Date(input.split(' ')[2]); //Event for 03/25/2015
                         time_min.setHours(0, 0, 0);
-                        var time_max = new Date(input.split(' ')[2]);
+                        time_max = new Date(input.split(' ')[2]);
                         time_max.setHours(23, 59, 59);
                         
                     }
@@ -103,7 +175,7 @@ function Chat() {
                                 const events = response.result.items;
                                 var messsage_to_add = {
                                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                    message: 'Here are your scheduled events for ' + input.split(' ')[2],
+                                    message: 'Here are your scheduled events for ' + input.split(' ')[2] + ';',
                                     uid: uuidv4(),
                                     email: "abc@gmail.com",
                                     displayName: 'Scheduler Bot',
@@ -197,7 +269,7 @@ function Chat() {
                                     window.open(event.htmlLink)
                                     db.collection("chats").doc(chatId).collection("messages").add({
                                         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                        message: 'Added event to your Google Calendar!\n' + 'Event: ' + desc + '\nTime: ' + s + ' - '+ e + '\nLink to event: ' +  event.htmlLink,
+                                        message: 'Added event to your Google Calendar! ' + 'Event: ' + desc + ' Time: ' + s + ' - '+ e + ' Link to event: ' +  event.htmlLink,
                                         uid: uuidv4(),
                                         email: "abc@gmail.com",
                                         displayName: 'Scheduler Bot',
