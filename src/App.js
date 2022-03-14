@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import './App.css';
-import Imessage from "./Imessage"; //could use ./Imessage.js as well, they are the same
+import './css/App.css';
+import Imessage from "./js/Imessage";
 import { selectUser, login, logout } from "./features/userSlice";
-import Login from './Login';
-import { auth } from "./firebase"
+import Login from './js/Login';
+import { auth } from "./js/firebase"
 
 function App() {
   const user = useSelector(selectUser);

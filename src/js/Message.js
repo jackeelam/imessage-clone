@@ -1,9 +1,9 @@
 import { Avatar } from '@material-ui/core';
 import React, {forwardRef} from 'react';
 import { useSelector } from 'react-redux';
-import { selectUser } from './features/userSlice';
-import "./Message.css";
-import image from './lock.gif';
+import { selectUser } from '../features/userSlice';
+import "../css/Message.css";
+import image from '../icons/lock.gif';
 
 const Message = forwardRef(
     (

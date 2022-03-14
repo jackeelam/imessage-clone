@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import "./Chat.css";
+import "../css/Chat.css";
 import {IconButton, Input} from "@material-ui/core"
 import MicNoneIcon from "@material-ui/icons/MicNone"
 import Message from './Message';
 import { useSelector } from 'react-redux';
-import { selectChatId, selectChatName } from './features/chatSlice';
+import { selectChatId, selectChatName } from '../features/chatSlice';
 import db from './firebase';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import { selectUser } from './features/userSlice';
+import { selectUser } from '../features/userSlice';
 import FlipMove from 'react-flip-move';
 import { v4 as uuidv4 } from 'uuid';
 import Sentiment from 'sentiment';
