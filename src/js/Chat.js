@@ -190,7 +190,7 @@ function Chat() {
                                 const events = response.result.items;
                                 var messsage_to_add = {
                                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                    message: 'Here are your scheduled events for ' + input.split(' ')[2] + ':',
+                                    message: 'Here are your scheduled events for ' + input.split(' ')[input.split(' ').length-1] + ':',
                                     uid: uuidv4(),
                                     email: "Scheduler_Bot@gmail.com",
                                     displayName: 'Events_Bot',
