@@ -20,7 +20,7 @@ import "./Message.css";
 
 const Message = forwardRef(
     (
-        {id, contents: {timestamp, displayName, email, message, photo, uid, event_desc, event_start, event_end, event_link} },
+        {id, contents: {timestamp, displayName, email, message, photo, uid, event_desc, event_start, event_end, event_link, meme_img} },
     ref
     ) => {
 
@@ -30,6 +30,13 @@ const Message = forwardRef(
            <Avatar className="message_photo" src={photo}/>
            <p>{message}</p>
            <small>{new Date(timestamp?.toDate()).toLocaleString()}</small>
+
+           {displayName === 'Sentiment Bot' &&
+            <p>
+                
+                <img src={meme_img} alt={meme_img}/>
+            </p>
+           }
         </div>
     )
     

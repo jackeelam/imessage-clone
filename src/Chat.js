@@ -62,6 +62,8 @@ function Chat() {
             displayName: user.displayName,
         });
 
+        db.collection("chats").doc(chatId).collection("messages").get();
+
     
         console.log("input" + input);
             switch(true){
@@ -71,6 +73,8 @@ function Chat() {
                     console.log("Sentiment score for " + sentence + ": ");
                     console.log(result);
                     var message = "";
+                    var meme_img = "";
+
                     if(result.score <0){
                         message = "Aww, I am sorry you had a bad day and are not feeling great :("
                     }
@@ -106,17 +110,11 @@ function Chat() {
                                     })
                                 }
                               ).then(img =>
-                                img.json().then(img_json => {console.log("Generated meme url: "); console.log(img_json);} )
+                                img.json().then(img_json => {console.log("Generated meme url: "); meme_img = img_json.data.url; console.log(meme_img);} )
                               );
                         })
                     );
 
-                    
-                    //   const response = await fetch(
-                    //     `https://api.imgflip.com/caption_image${objectToQueryParam(
-                    //       params
-                    //     )}`
-                    
                     db.collection("chats").doc(chatId).collection("messages").add(
                         {
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -124,6 +122,7 @@ function Chat() {
                             uid: uuidv4(),
                             email: "abc@gmail.com",
                             displayName: 'Sentiment Bot',
+                            meme_img: meme_img,
                         }
                     );
 
