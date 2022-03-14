@@ -23,6 +23,12 @@ function Chat() {
     const chatName = useSelector(selectChatName);
     const chatId = useSelector(selectChatId);
 
+    var gapi = window.gapi;
+    var CLIENT_ID = "28311222963-2h78gftbh4khmpvjpgkbp20vgj6sqfn6.apps.googleusercontent.com"
+    var API_KEY = "AIzaSyAFfLpLvNeDMvccD-G52JnGP2fbbic8pWo"
+    var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
+    var SCOPES = "https://www.googleapis.com/auth/calendar.events"
+
     useEffect(() => {
         if (chatId){
             db.collection('chats').doc(chatId).collection("messages")
@@ -51,7 +57,78 @@ function Chat() {
     
         console.log("input" + input);
             switch(true){
-                case input.includes("Schedule"):
+                case input.includes("Events for"):{
+                    var time_min = new Date();
+                    time_min.setHours(0, 0, 0);
+                    
+                    var time_max = new Date();
+                    time_max.setHours(23, 59, 59);
+                    
+                    //"03/25/2015"
+                    if(input.includes("today") === false){
+                        console.log(input.split(' ')[2]);
+                        time_min = new Date(input.split(' ')[2]); //Event for 03/25/2015
+                        time_min.setHours(0, 0, 0);
+                        var time_max = new Date(input.split(' ')[2]);
+                        time_max.setHours(23, 59, 59);
+                        
+                    }
+                    console.log(time_min);
+                    console.log(time_max);
+
+                    gapi.load('client:auth2', () => {
+                        console.log('loaded client');
+                  
+                        gapi.client.init({
+                          apiKey: API_KEY,
+                          clientId: CLIENT_ID,
+                          discoveryDocs: DISCOVERY_DOCS,
+                          scope: SCOPES,
+                        });
+
+                        gapi.client.load('calendar', 'v3', () => console.log('bam!'))
+
+                        gapi.auth2.getAuthInstance().signIn()
+                        .then(() => {
+                            //Get list of events
+                            gapi.client.calendar.events.list({
+                                'calendarId': 'primary',
+                                'timeMin': time_min.toISOString(),
+                                'timeMax': time_max.toISOString(),
+                                'showDeleted': false,
+                                'singleEvents': true,
+                                'maxResults': 7,
+                                'orderBy': 'startTime'
+                              }).then(response => {
+                                const events = response.result.items;
+                                var messsage_to_add = {
+                                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                    message: 'Here are your scheduled events for ' + input.split(' ')[2],
+                                    uid: uuidv4(),
+                                    email: "abc@gmail.com",
+                                    displayName: 'Scheduler Bot',
+                                };
+                                db.collection("chats").doc(chatId).collection("messages").add(
+                                    messsage_to_add
+                                );
+                                for(let i = 0; i < events.length; i++){
+                                    var start = new Date(events[i]['start']['dateTime']).toLocaleTimeString('en-US');
+                                    var end = new Date(events[i]['end']['dateTime']).toLocaleTimeString('en-US');
+                                    messsage_to_add["message"] = events[i]['summary'] + ' from ' + start + ' to ' + end;
+                                    db.collection("chats").doc(chatId).collection("messages").add(
+                                        messsage_to_add
+                                    );
+                                }
+                                console.log('EVENTS: ', events)
+                                console.log(events[0]['summary']);
+                              })
+                        });
+
+                    });
+                    break;
+
+                }
+                case input.includes("Schedule"):{
                     let split_str = input.split(',');
                     if(split_str.length !==5){
                         console.log('Cannot schedule, format must be in Schedule: description, Month dd, yyyy, hh:mm, hh:mm');
@@ -80,12 +157,6 @@ function Chat() {
 
                         const eventStartTime = new Date(event_date + ', ' + year + ' ' + event_start_time);
                         const eventEndTime = new Date(event_date + ', ' + year + ' ' + event_end_time);
-                        
-                        var gapi = window.gapi;
-                        var CLIENT_ID = "28311222963-2h78gftbh4khmpvjpgkbp20vgj6sqfn6.apps.googleusercontent.com"
-                        var API_KEY = "AIzaSyAFfLpLvNeDMvccD-G52JnGP2fbbic8pWo"
-                        var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
-                        var SCOPES = "https://www.googleapis.com/auth/calendar.events"
                         
                         gapi.load('client:auth2', () => {
                             console.log('loaded client');
@@ -141,12 +212,17 @@ function Chat() {
                             });
                         });
                         
-                        
-
                     }
-                    
+                    break;
 
-            };
+                }; //end of case
+
+                default:
+                    //do nothing
+            }
+
+            
+                
         //Firebase magic
         setInput("");
     };
