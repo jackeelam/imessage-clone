@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "../css/Chat.css";
-import {IconButton, Input} from "@material-ui/core"
+import {IconButton} from "@material-ui/core"
 import MicNoneIcon from "@material-ui/icons/MicNone"
 import Message from './Message';
 import { useSelector } from 'react-redux';
@@ -76,7 +76,7 @@ function Chat() {
     
         console.log("input" + input);
             switch(true){
-                case input.includes("Sentiment score:"):{
+                case input.includes("Sentiment score:") || input.includes("sentiment score:") :{
                     var sentence = input.split(':')[1];
                     var result = sentiment.analyze(sentence);
                     console.log("Sentiment score for " + sentence + ": ");
@@ -100,7 +100,6 @@ function Chat() {
                     var bottom_text = sentence_array.slice(sentence_array.length/2, sentence_array.length).join(" ");
                     //Fetch a meme
                     fetch("https://api.imgflip.com/get_memes").then(x => x.json().then(response => {
-                            //console.log(response.data.memes);
                             const params = {
                                 template_id: response.data.memes[0].id,
                                 text0: top_text,
@@ -109,9 +108,6 @@ function Chat() {
                                 password: "kSV_G+aH4bEYyDe"
                               };
                               console.log(`https://api.imgflip.com/caption_image${objectToQueryParam(params)}`);
-                            //   fetch(`https://api.imgflip.com/caption_image${objectToQueryParam(params)}`).then(img =>
-                            //     img.json().then(img_json => {console.log("Generated meme url: "); console.log(img_json);} )
-                            //   );
                               var random_index = Math.floor(Math.random() * response.data.memes.length); 
                               fetch('https://api.imgflip.com/caption_image', 
                                 {
@@ -134,8 +130,8 @@ function Chat() {
                                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                             message: message,
                                             uid: uuidv4(),
-                                            email: "abc@gmail.com",
-                                            displayName: 'Sentiment Bot',
+                                            email: "Sentiment_Bot@gmail.com",
+                                            displayName: 'Sentiment_Bot',
                                             meme_img: meme_img,
                                         }
                                     );
@@ -148,7 +144,7 @@ function Chat() {
 
                     break;
                 }
-                case input.includes("Events for"):{
+                case input.includes("Events for") || input.includes("Events For") || input.includes("events for"):{
                     var time_min = new Date();
                     time_min.setHours(0, 0, 0);
                     
@@ -196,8 +192,8 @@ function Chat() {
                                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                     message: 'Here are your scheduled events for ' + input.split(' ')[2] + ';',
                                     uid: uuidv4(),
-                                    email: "abc@gmail.com",
-                                    displayName: 'Scheduler Bot',
+                                    email: "Scheduler_Bot@gmail.com",
+                                    displayName: 'Scheduler_Bot',
                                 };
                                 db.collection("chats").doc(chatId).collection("messages").add(
                                     messsage_to_add
@@ -306,7 +302,7 @@ function Chat() {
                 })
                 break;
     
-                case input.includes("Schedule"):{
+                case input.includes("Schedule") || input.includes("schedule"):{
                     let split_str = input.split(',');
                     if(split_str.length !==5){
                         console.log('Cannot schedule, format must be in Schedule: description, Month dd, yyyy, hh:mm, hh:mm');
@@ -314,8 +310,8 @@ function Chat() {
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: 'Cannot schedule, format must be in Schedule: description, mm/dd/yy, hh:mm:ss, hh:mm:ss',
                             uid: uuidv4(),
-                            email: "abc@gmail.com",
-                            displayName: 'Scheduler Bot',
+                            email: "Scheduler_Bot@gmail.com",
+                            displayName: 'Scheduler_Bot',
                         });
                     }
                     else{
@@ -375,10 +371,10 @@ function Chat() {
                                     window.open(event.htmlLink)
                                     db.collection("chats").doc(chatId).collection("messages").add({
                                         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                        message: 'Added event to your Google Calendar! ' + 'Event: ' + desc + ' Time: ' + s + ' - '+ e + ' Link to event: ' +  event.htmlLink,
+                                        message: 'Added event to your Google Calendar!\n' + 'Event: ' + desc + '\nTime: ' + s + ' - '+ e,
                                         uid: uuidv4(),
-                                        email: "abc@gmail.com",
-                                        displayName: 'Scheduler Bot',
+                                        email: "Scheduler_Bot@gmail.com",
+                                        displayName: 'Scheduler_Bot',
                                         event_desc: desc,
                                         event_start: eventStartTime,
                                         event_end: eventEndTime,
