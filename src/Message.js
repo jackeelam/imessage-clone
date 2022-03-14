@@ -33,8 +33,7 @@ const Message = forwardRef(
 
            {displayName === 'Sentiment Bot' &&
             <p>
-                
-                <img src={meme_img} alt={meme_img}/>
+                <img src={meme_img} alt={meme_img} width="500"/>
             </p>
            }
         </div>

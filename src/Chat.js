@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./Chat.css";
-import {IconButton} from "@material-ui/core"
+import {IconButton, Input} from "@material-ui/core"
 import MicNoneIcon from "@material-ui/icons/MicNone"
 import Message from './Message';
 import { useSelector } from 'react-redux';
@@ -84,13 +84,18 @@ function Chat() {
                     else{
                         message = "I'm glad you had a great day!"
                     }
+
+                    //Set caption for meme using user input
+                    var sentence_array = sentence.split(" ");
+                    var top_text = sentence_array.slice(0,sentence_array.length /2).join(" ");
+                    var bottom_text = sentence_array.slice(sentence_array.length/2, sentence_array.length).join(" ");
                     //Fetch a meme
                     fetch("https://api.imgflip.com/get_memes").then(x => x.json().then(response => {
                             //console.log(response.data.memes);
                             const params = {
                                 template_id: response.data.memes[0].id,
-                                text0: 'topText',
-                                text1: 'bottomText',
+                                text0: top_text,
+                                text1: bottom_text,
                                 username: "jackeelam",
                                 password: "kSV_G+aH4bEYyDe"
                               };
@@ -98,33 +103,37 @@ function Chat() {
                             //   fetch(`https://api.imgflip.com/caption_image${objectToQueryParam(params)}`).then(img =>
                             //     img.json().then(img_json => {console.log("Generated meme url: "); console.log(img_json);} )
                             //   );
+                              var random_index = Math.floor(Math.random() * response.data.memes.length); 
                               fetch('https://api.imgflip.com/caption_image', 
                                 {
                                     method: 'POST',
                                     body: new URLSearchParams({
-                                        template_id: response.data.memes[0].id,
-                                        text0: 'topText',
-                                        text1: 'bottomText',
+                                        template_id: response.data.memes[random_index].id,
+                                        text0: top_text,
+                                        text1: bottom_text,
                                         username: "jackeelam",
                                         password: "kSV_G+aH4bEYyDe"
                                     })
                                 }
                               ).then(img =>
-                                img.json().then(img_json => {console.log("Generated meme url: "); meme_img = img_json.data.url; console.log(meme_img);} )
+                                img.json().then(img_json => {
+                                    console.log("Generated meme url: "); meme_img = img_json.data.url; console.log(meme_img);
+                                    db.collection("chats").doc(chatId).collection("messages").add(
+                                        {
+                                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                            message: message,
+                                            uid: uuidv4(),
+                                            email: "abc@gmail.com",
+                                            displayName: 'Sentiment Bot',
+                                            meme_img: meme_img,
+                                        }
+                                    );
+                                })
                               );
                         })
                     );
 
-                    db.collection("chats").doc(chatId).collection("messages").add(
-                        {
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            message: message,
-                            uid: uuidv4(),
-                            email: "abc@gmail.com",
-                            displayName: 'Sentiment Bot',
-                            meme_img: meme_img,
-                        }
-                    );
+                    
 
                     break;
                 }
